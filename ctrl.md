@@ -1,0 +1,6 @@
+- **ENTER**: Start typing a message.
+- **Arrow keys**: Navigate conversation tree.
+- **E**: Edit last message.
+- **S**: Open settings.
+- **C**: Save current chat and load or start new.
+- **Q**: Save current chat and quit.
