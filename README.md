@@ -24,4 +24,4 @@ Select the setting you want to change from the table and enter a new value, rese
 
 ## Installation
 
-This is pure python code, so simply cloning this repo and installing it within a venv with for example ```pip install .``` is sufficient. When you launch this script for the first time (by calling ```main.py```), enter your API key (and change URL or model), and you are all set up!
+This is pure python code, so simply cloning this repo and installing its dependencies via ```pip install -r requirements.txt``` is sufficient. When you launch this script for the first time (by calling ```main.py```), enter your API key (and change URL or model), and you are all set up!
