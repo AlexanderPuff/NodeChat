@@ -7,6 +7,7 @@ from Screen import Screen, _clear_terminal, _get_input
 from datetime import datetime
 
 class SaveScreen(Screen):
+    """This small screen lets users save the current chat to disk."""
     def __init__(self, scr: "Screen", cont: bool = True):
         super().__init__(scr)
         self.continue_after = cont
@@ -21,6 +22,7 @@ class SaveScreen(Screen):
             return ChatLoader(self) if self.continue_after else None
         
     def save(self):
+        """Converts the current chat into a dictionary and stores it to disk. If the chat was loaded from a file, it is updated; Otherwise, ask user for a name for a new file."""
         root = self.cur
         root2 = root
         while root:

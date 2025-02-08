@@ -14,6 +14,7 @@ from Screen import Screen, _get_input
 
 
 def get_config_dir():
+    """Returns the usual location for config files, depending on the OS. Additionally makes an empty directory there for this app if it doesn't exist yet."""
     if os.name == 'nt':  # Windows
         base_dir = os.getenv('APPDATA')
     else:  # Linux/Mac
@@ -24,11 +25,19 @@ def get_config_dir():
     return config_dir
 
 def save_settings(settings: dict):
+    """Store settings in a .json file inside this app's config directory.
+
+    Args:
+    settings: A dictionary holding user settings as key-value pairs."""
     config_file = get_config_dir() / 'settings.json'
     with open(config_file, 'w') as f:
         json.dump(settings, f)
 
 def load_settings():
+    """Load this app's settings file.
+    
+    Returns:
+    User settings as a dictionary, or an empty dictionary if the file doesn't exist."""
     config_file = get_config_dir() / 'settings.json'
     if config_file.exists():
         with open(config_file) as f:
@@ -36,17 +45,20 @@ def load_settings():
     return {}  # Default settings
 
 def delete_settings():
+    """Delete this app's settings file."""
     config_file = get_config_dir() / 'settings.json'
     if config_file.exists():
         os.remove(config_file)
 
 
 class SettingsScreen(Screen):
+    """A screen for adjusting user settings."""
+
     default = {
             "URL": "https://api.deepseek.com",
             "ApiKey": "enter-key-here",
             "Model": "deepseek-chat",
-            "Temperature": 1.5,
+            "Temperature": 1,
             "FrequencyPenalty": 0.2,
             "PresencePenalty": 0.2,
             }
@@ -74,8 +86,7 @@ class SettingsScreen(Screen):
                 table.add_row(key, str(value))
 
         self.renderables = [table, Rule(style="bold white")]
-        with open("settings_ctrl.md", "r", encoding="utf-8") as file:
-                self.renderables.append(Markdown(file.read()))
+        self.renderables.append(Markdown("Arrow Keys: Navigate | Enter: Edit | 's': Save & Return | 'r': Reset."))
         self.renderables.append(Rule(style = "bold white"))
 
     def handle_input(self, key):
@@ -105,6 +116,7 @@ class SettingsScreen(Screen):
         return self
 
     def _update_setting(self):
+        """After a user selects a setting to change, this parses their input and if valid updates the settings dictionary. Important: this does not yet permanently store the change on disk."""
         key = self.settings_keys[self.index]
         cur_val = self.settings[key]
         new_val = _get_input(prompt_text=f"Enter new value for {key}: ", default= str(cur_val))

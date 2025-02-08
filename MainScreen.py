@@ -14,10 +14,10 @@ from conversationTree import *
 from Screen import Screen, _clear_terminal, _get_input
 import sys
 
-PATH = "./userInfo/prompts/standardAssistant.txt"
 RENDERED_MSGS = 5
 
 class MainScreen(Screen):
+    """The main screen, where conversations with LLMs take place."""
 
     def __init__(self, scr: "Screen" = None):
         if not scr:
@@ -44,6 +44,11 @@ class MainScreen(Screen):
         self.renderables = renderables
 
     def _generate(self):
+        """Stream in a response via the chosen API. This does multiple things:
+        - Send a request to the API.
+        - Print tokens as the stream in.
+        - If there is an error: Print that instead.
+        - Convert the streamed content to a message node placed in the conversation tree, and properly render markdown once finished."""
         try:
             stream = self.client.chat.completions.create(
                 model=self.settings['Model'],
@@ -135,6 +140,7 @@ class MainScreen(Screen):
         return self
 
     def _edit(self):
+        """Lets users edit the current message. If they press escape, restore the previous state. If the edited message was one of theirs, also generate a response."""
         if self.cur.prev:
             prev_text = self.cur.content
             input = _get_input(default=prev_text)
@@ -153,6 +159,7 @@ class MainScreen(Screen):
                 self.render_cur()
     
     def _type_msg(self):
+        """Lets users type a new message, stores it in the conversation tree, and generates a response."""
         input = _get_input()
         if input == None:
             self._render()
